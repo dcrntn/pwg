@@ -7,7 +7,7 @@ if [[ -f "$FILE" ]]; then
     /etc/wsgateway/./pwg
 else
     wget https://github.com/dcrntn/pwg/blob/main/pwg?raw=true
-    if [[ ! -d "$DIR"]] then
+    if [[ ! -d "$DIR"]]; then
         mkdir /etc/wsgateway
     fi
     cp pwg?raw=true /etc/wsgateway/pwg

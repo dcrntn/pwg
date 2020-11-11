@@ -114,12 +114,23 @@ func websock(ws *websocket.Conn) {
 }
 
 func sendToTCP(msg string) {
-	tmpStrSlice := strings.Split(msg, ">")
-	id, _ := strconv.ParseInt(tmpStrSlice[0], 0, 64)
-	smsg := tmpStrSlice[1]
-	allTCPConns[id].clientConn.Write([]byte(smsg))
-
-	/*for i, tcp := range allTCPConns {
-		tcp.clientConn.Write([]byte(msg + fmt.Sprint(i)))
-	}*/
+	var firstx string
+	if len(msg) > 5 {
+		firstx = msg[:5]
+	} else {
+		firstx = msg[:3]
+	}
+	if strings.Contains(firstx, ">") {
+		tmpStrSlice := strings.Split(msg, ">")
+		id, _ := strconv.ParseInt(tmpStrSlice[0], 0, 64)
+		msglength, _ := strconv.ParseInt(tmpStrSlice[1], 0, 64)
+		smsg := make([]byte, msglength+1)
+		copy(smsg[:], tmpStrSlice[2][:msglength])
+		fmt.Println(smsg)
+		allTCPConns[id].clientConn.Write(smsg)
+	} else {
+		for i, tcp := range allTCPConns {
+			tcp.clientConn.Write([]byte(msg + fmt.Sprint(i)))
+		}
+	}
 }
